@@ -33,38 +33,44 @@ def convert_to_standard_unit(ingredient, amount):
     return amount
 
 def generate_grocery_list():
-    """Generate weekly grocery list from meal plan with standardized units"""
+    """Generate weekly grocery list with both original and standardized units"""
     grocery_list = {}
+    original_quantities = {}
 
     # Combine ingredients from all meals
     for meal_info in MEAL_PLAN.values():
         for ingredient, amount in meal_info['ingredients'].items():
             weekly_amount = convert_to_standard_unit(ingredient, amount)
+            daily_amount = amount
+
             if ingredient in grocery_list:
                 # Extract numeric value for weekly calculation
                 current = float(grocery_list[ingredient].split()[0])
                 new = float(weekly_amount.split()[0])
                 unit = weekly_amount.split()[1]
                 grocery_list[ingredient] = f"{(current + new) * 7:.2f} {unit}"
+                original_quantities[ingredient] = f"{7}x {daily_amount}"
             else:
                 # Initialize with weekly amount
                 numeric = float(weekly_amount.split()[0])
                 unit = weekly_amount.split()[1]
                 grocery_list[ingredient] = f"{numeric * 7:.2f} {unit}"
+                original_quantities[ingredient] = f"{7}x {daily_amount}"
 
-    return grocery_list
+    return grocery_list, original_quantities
 
 def display_grocery_list():
-    """Display weekly grocery list with standardized units"""
+    """Display weekly grocery list with both original and standardized units"""
     st.subheader("Weekly Grocery List")
 
-    grocery_list = generate_grocery_list()
+    grocery_list, original_quantities = generate_grocery_list()
 
     # Create a DataFrame for better display
     import pandas as pd
     df = pd.DataFrame({
         'Item': grocery_list.keys(),
-        'Weekly Quantity': grocery_list.values(),
+        'Recipe Quantity': original_quantities.values(),
+        'Total Quantity (Standard Units)': grocery_list.values(),
         'Estimated Price Range': ['$5-15' for _ in grocery_list]  # Placeholder prices
     })
 
@@ -74,9 +80,10 @@ def display_grocery_list():
         hide_index=True,
         column_config={
             'Item': st.column_config.TextColumn('Item'),
-            'Weekly Quantity': st.column_config.TextColumn('Weekly Quantity'),
+            'Recipe Quantity': st.column_config.TextColumn('Recipe Quantity'),
+            'Total Quantity (Standard Units)': st.column_config.TextColumn('Total Quantity (Standard Units)'),
             'Estimated Price Range': st.column_config.TextColumn('Estimated Price Range')
         }
     )
 
-    st.info("💡 Tip: Quantities are converted to standard units (pounds, fluid ounces, or pieces)")
+    st.info("💡 Tip: Standard units are in pounds (lbs), fluid ounces (fl oz), or pieces")
