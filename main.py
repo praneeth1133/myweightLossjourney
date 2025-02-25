@@ -62,9 +62,12 @@ st.markdown(f"""
     }}
     .main {{
         padding: 2rem;
+        background-color: {current_theme['bg']};
+        color: {current_theme['text']};
     }}
     .stMetric {{
-        background-color: {current_theme['secondary_bg']};
+        background-color: {current_theme['secondary_bg']} !important;
+        color: {current_theme['text']} !important;
         padding: 1.5rem;
         border-radius: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -109,6 +112,16 @@ st.markdown(f"""
         border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }}
+    .stApp {{
+        background-color: {current_theme['bg']} !important;
+    }}
+    .stMarkdown {{
+        color: {current_theme['text']} !important;
+    }}
+    .streamlit-expanderHeader {{
+        background-color: {current_theme['secondary_bg']} !important;
+        color: {current_theme['text']} !important;
     }}
     </style>
 """, unsafe_allow_html=True)
