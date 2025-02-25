@@ -11,6 +11,16 @@ st.set_page_config(
     layout="wide"
 )
 
+# Initialize theme state
+if 'theme' not in st.session_state:
+    st.session_state.theme = 'dark'
+
+# Theme toggle
+with st.sidebar:
+    if st.button('🌓 Toggle Theme'):
+        st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
+        st.rerun()
+
 # Motivational quotes
 QUOTES = [
     {"text": "The only bad workout is the one that didn't happen.", "author": "Unknown"},
@@ -20,62 +30,82 @@ QUOTES = [
     {"text": "The difference between try and triumph is just a little umph!", "author": "Marvin Phillips"}
 ]
 
-# Custom CSS
-st.markdown("""
-    <style>
-    .main {
-        padding: 2rem;
+# Dynamic theme colors
+THEME = {
+    'dark': {
+        'bg': '#1E1E1E',
+        'secondary_bg': '#252526',
+        'text': '#FFFFFF',
+        'primary': '#4CAF50',
+        'secondary_text': '#888888'
+    },
+    'light': {
+        'bg': '#FFFFFF',
+        'secondary_bg': '#F0F2F6',
+        'text': '#262730',
+        'primary': '#2E7D32',
+        'secondary_text': '#666666'
     }
-    .stMetric {
-        background-color: #252526;
+}
+
+current_theme = THEME[st.session_state.theme]
+
+# Custom CSS with dynamic theming
+st.markdown(f"""
+    <style>
+    .main {{
+        padding: 2rem;
+    }}
+    .stMetric {{
+        background-color: {current_theme['secondary_bg']};
         padding: 1.5rem;
         border-radius: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: transform 0.2s ease;
-    }
-    .stMetric:hover {
+    }}
+    .stMetric:hover {{
         transform: translateY(-5px);
-    }
-    .quote-card {
-        background-color: #252526;
+    }}
+    .quote-card {{
+        background-color: {current_theme['secondary_bg']};
         padding: 2rem;
         border-radius: 1rem;
         margin: 1rem 0;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
         animation: fadeIn 1s ease-in;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .quote-text {
+    }}
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(20px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+    .quote-text {{
         font-size: 1.5rem;
         font-style: italic;
         margin-bottom: 1rem;
-        color: #4CAF50;
-    }
-    .quote-author {
+        color: {current_theme['primary']};
+    }}
+    .quote-author {{
         font-size: 1rem;
-        color: #888;
-    }
-    .stTabs [data-baseweb="tab-list"] {
+        color: {current_theme['secondary_text']};
+    }}
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 24px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        background-color: #252526;
+    }}
+    .stTabs [data-baseweb="tab"] {{
+        background-color: {current_theme['secondary_bg']};
         border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
 # Header with animation
-st.markdown("""
+st.markdown(f"""
     <div style='text-align: center; animation: fadeIn 1s ease-in;'>
         <h1>🏋️ Praneeth's Weight Management Dashboard</h1>
-        <p style='font-size: 1.2rem; color: #4CAF50;'>Your journey to a healthier you starts here!</p>
+        <p style='font-size: 1.2rem; color: {current_theme['primary']};'>Your journey to a healthier you starts here!</p>
     </div>
 """, unsafe_allow_html=True)
 
@@ -106,10 +136,10 @@ with tab3:
 
 # Footer with progress visualization
 st.markdown("---")
-st.markdown("""
+st.markdown(f"""
     <div style='text-align: center; animation: fadeIn 1s ease-in;'>
         <h3>Your Weight Loss Journey</h3>
-        <div style='background: #252526; border-radius: 10px; padding: 20px; margin: 20px 0;'>
+        <div style='background: {current_theme['secondary_bg']}; border-radius: 10px; padding: 20px; margin: 20px 0;'>
             <p>Starting Weight: 325 lbs → Target Weight: 220 lbs</p>
             <p>Keep pushing forward! Every step counts! 💪</p>
         </div>
