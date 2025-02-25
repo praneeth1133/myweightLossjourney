@@ -138,7 +138,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # Handle theme toggle from custom button
-if st.button('🌓 Toggle Theme', key='theme_toggle'):
+if st.button('🌓 Toggle Theme', key='theme_toggle', type='primary'):
     st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
     st.rerun()
 
