@@ -77,32 +77,52 @@ st.markdown(f"""
         transform: translateY(-5px);
     }}
     .quote-card {{
-        background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJtYXJibGUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YwZjJmNiIvPjxwYXRoIGQ9Ik0wIDAgTDUwIDUwIEwxMDAgMCIgc3Ryb2tlPSIjZTBlMmU2IiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjbWFyYmxlKSIvPjwvc3ZnPg==');
-        background-color: {current_theme['secondary_bg']};
+        background: linear-gradient(
+            {'rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)' if current_theme['bg'] == '#FFFFFF' else 
+             'rgba(30, 30, 30, 0.9), rgba(30, 30, 30, 0.9)'}), 
+            url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjxwYXRoIGQ9Ik0wIDAgTDQwIDQwIE0wIDQwIEw0MCAwIE0yMCAwIEwyMCA0MCBNMCAyMCBMNDAgMjAiIHN0cm9rZT0iI2VlZWVlZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjIiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4=');
         padding: 2rem;
         border-radius: 1rem;
-        margin: 1rem 0;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        margin: 1.5rem 0;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1),
+                   inset 0 0 100px {'rgba(255, 255, 255, 0.5)' if current_theme['bg'] == '#FFFFFF' else 
+                                   'rgba(0, 0, 0, 0.2)'};
         text-align: center;
         animation: fadeIn 1s ease-in;
         border: 1px solid {current_theme['secondary_text']}22;
+        backdrop-filter: blur(5px);
+        position: relative;
+        overflow: hidden;
     }}
-    @keyframes fadeIn {{
-        from {{ opacity: 0; transform: translateY(20px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
+    .quote-card::before {{
+        content: '"';
+        position: absolute;
+        top: -0.5rem;
+        left: 1rem;
+        font-size: 8rem;
+        opacity: 0.1;
+        font-family: Georgia, serif;
+        color: {current_theme['primary']};
     }}
     .quote-text {{
         font-size: 1.5rem;
         font-style: italic;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         color: {current_theme['primary']};
         line-height: 1.6;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1;
     }}
     .quote-author {{
         font-size: 1rem;
         color: {current_theme['secondary_text']};
         font-weight: 500;
+        position: relative;
+        z-index: 1;
+        padding-top: 0.5rem;
+        border-top: 1px solid {current_theme['secondary_text']}22;
+        display: inline-block;
     }}
     .stTabs [data-baseweb="tab-list"] {{
         gap: 24px;
