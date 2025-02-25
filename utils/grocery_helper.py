@@ -1,5 +1,7 @@
 import streamlit as st
+import pandas as pd
 from data.sample_meal_plan import MEAL_PLAN
+from io import BytesIO
 
 # Define measurement units and conversions
 INGREDIENT_UNITS = {
@@ -59,6 +61,24 @@ def generate_grocery_list():
 
     return grocery_list, original_quantities
 
+def export_to_excel():
+    """Generate Excel file for grocery list"""
+    grocery_list, original_quantities = generate_grocery_list()
+
+    df = pd.DataFrame({
+        'Item': grocery_list.keys(),
+        'Recipe Quantity': original_quantities.values(),
+        'Total Quantity (Standard Units)': grocery_list.values(),
+        'Estimated Price Range': ['$5-15' for _ in grocery_list]
+    })
+
+    # Create Excel file in memory
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Grocery List')
+
+    return output.getvalue()
+
 def display_grocery_list():
     """Display weekly grocery list with both original and standardized units"""
     st.subheader("Weekly Grocery List")
@@ -66,7 +86,6 @@ def display_grocery_list():
     grocery_list, original_quantities = generate_grocery_list()
 
     # Create a DataFrame for better display
-    import pandas as pd
     df = pd.DataFrame({
         'Item': grocery_list.keys(),
         'Recipe Quantity': original_quantities.values(),
@@ -84,6 +103,15 @@ def display_grocery_list():
             'Total Quantity (Standard Units)': st.column_config.TextColumn('Total Quantity (Standard Units)'),
             'Estimated Price Range': st.column_config.TextColumn('Estimated Price Range')
         }
+    )
+
+    # Excel export button
+    excel_file = export_to_excel()
+    st.download_button(
+        label="📥 Download Grocery List as Excel",
+        data=excel_file,
+        file_name="weekly_grocery_list.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     st.info("💡 Tip: Standard units are in pounds (lbs), fluid ounces (fl oz), or pieces")

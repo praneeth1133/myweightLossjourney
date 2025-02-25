@@ -13,22 +13,7 @@ st.set_page_config(
 
 # Initialize theme state
 if 'theme' not in st.session_state:
-    st.session_state.theme = 'dark'
-
-# Theme toggle
-with st.sidebar:
-    if st.button('🌓 Toggle Theme'):
-        st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
-        st.rerun()
-
-# Motivational quotes
-QUOTES = [
-    {"text": "The only bad workout is the one that didn't happen.", "author": "Unknown"},
-    {"text": "Your body can stand almost anything. It's your mind you have to convince.", "author": "Unknown"},
-    {"text": "Weight loss is a journey, not a destination.", "author": "Unknown"},
-    {"text": "Success is walking from failure to failure with no loss of enthusiasm.", "author": "Winston Churchill"},
-    {"text": "The difference between try and triumph is just a little umph!", "author": "Marvin Phillips"}
-]
+    st.session_state.theme = 'light'
 
 # Dynamic theme colors
 THEME = {
@@ -44,6 +29,7 @@ THEME = {
         'secondary_bg': '#F0F2F6',
         'text': '#262730',
         'primary': '#2E7D32',
+        'accent': '#4CAF50',
         'secondary_text': '#666666'
     }
 }
@@ -53,6 +39,27 @@ current_theme = THEME[st.session_state.theme]
 # Custom CSS with dynamic theming
 st.markdown(f"""
     <style>
+    .theme-toggle {{
+        position: fixed;
+        top: 0.5rem;
+        right: 1rem;
+        z-index: 1000;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        padding: 0.5rem;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s;
+    }}
+    .theme-toggle:hover {{
+        background: {current_theme['secondary_bg']};
+    }}
     .main {{
         padding: 2rem;
     }}
@@ -67,13 +74,15 @@ st.markdown(f"""
         transform: translateY(-5px);
     }}
     .quote-card {{
+        background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJtYXJibGUiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2YwZjJmNiIvPjxwYXRoIGQ9Ik0wIDAgTDUwIDUwIEwxMDAgMCIgc3Ryb2tlPSIjZTBlMmU2IiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjbWFyYmxlKSIvPjwvc3ZnPg==');
         background-color: {current_theme['secondary_bg']};
         padding: 2rem;
         border-radius: 1rem;
         margin: 1rem 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         text-align: center;
         animation: fadeIn 1s ease-in;
+        border: 1px solid {current_theme['secondary_text']}22;
     }}
     @keyframes fadeIn {{
         from {{ opacity: 0; transform: translateY(20px); }}
@@ -84,10 +93,13 @@ st.markdown(f"""
         font-style: italic;
         margin-bottom: 1rem;
         color: {current_theme['primary']};
+        line-height: 1.6;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }}
     .quote-author {{
         font-size: 1rem;
         color: {current_theme['secondary_text']};
+        font-weight: 500;
     }}
     .stTabs [data-baseweb="tab-list"] {{
         gap: 24px;
@@ -100,6 +112,44 @@ st.markdown(f"""
     }}
     </style>
 """, unsafe_allow_html=True)
+
+# Theme toggle button in top right
+st.markdown(f"""
+    <div class="theme-toggle" onclick="
+        var event = new CustomEvent('theme_toggle');
+        window.dispatchEvent(event);
+    ">
+        {'🌙' if st.session_state.theme == 'light' else '☀️'}
+    </div>
+    <script>
+        window.addEventListener('theme_toggle', function() {{
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '';
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = '🌓 Toggle Theme';
+            input.value = 'true';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }});
+    </script>
+""", unsafe_allow_html=True)
+
+# Handle theme toggle from custom button
+if st.button('🌓 Toggle Theme', key='theme_toggle'):
+    st.session_state.theme = 'light' if st.session_state.theme == 'dark' else 'dark'
+    st.rerun()
+
+# Motivational quotes
+QUOTES = [
+    {"text": "The only bad workout is the one that didn't happen.", "author": "Unknown"},
+    {"text": "Your body can stand almost anything. It's your mind you have to convince.", "author": "Unknown"},
+    {"text": "Weight loss is a journey, not a destination.", "author": "Unknown"},
+    {"text": "Success is walking from failure to failure with no loss of enthusiasm.", "author": "Winston Churchill"},
+    {"text": "The difference between try and triumph is just a little umph!", "author": "Marvin Phillips"}
+]
 
 # Header with animation
 st.markdown(f"""
